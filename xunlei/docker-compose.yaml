@@ -13,11 +13,10 @@ services:
       -  "/DATA/Downloads:/xunlei/downloads"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.xunlei_router.service=xunlei_service"
-      - "traefik.http.services.xunlei_service.loadbalancer.server.scheme=http"
-      - "traefik.http.services.xunlei_service.loadbalancer.server.port=2345"
-      - "traefik.http.routers.xunlei_router.rule=Host(`raspberrypi`) && PathPrefix(`/xunlei`)"
-      - "traefik.http.routers.xunlei_router.entrypoints=web"
+      - "traefik.http.routers.xunlei.rule=Host(`raspberrypi`) && PathPrefix(`/webman`)"
+      - "traefik.http.routers.xunlei.service=xunlei"
+      - "traefik.http.services.xunlei.loadbalancer.server.scheme=http"
+      - "traefik.http.services.xunlei.loadbalancer.server.port=2345"
 
 networks:
   traefik:

@@ -8,7 +8,7 @@ services:
     networks:
       - traefik
     command:
-      #- "--log.level=DEBUG"
+      - "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
@@ -34,9 +34,8 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.raspberrypi`)"
+      - "traefik.http.routers.whoami.rule=Host(`raspberrypi`) && PathPrefix(`/whoami`)"
       - "traefik.http.routers.whoami.entrypoints=web"
-
 
 networks:
   traefik:
