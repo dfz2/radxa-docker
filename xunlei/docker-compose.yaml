@@ -13,8 +13,9 @@ services:
       -  "/DATA/Downloads:/xunlei/downloads"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`raspberrypi`) && PathPrefix(`/xunlei`)"
-      - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.services.xunlei.loadbalancer.server.port=2345"
+      - "traefik.http.routers.xunlei.rule=Host(`xunlei.raspberrypi`)"
+      - "traefik.http.routers.xunlei.entrypoints=web"
 
 networks:
   traefik:

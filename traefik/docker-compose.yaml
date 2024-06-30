@@ -13,6 +13,7 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
+      - "--providers.docker.network=traefik"
     labels:
       - "traefik.http.routers.traefik-dashboard.entrypoints=http"
       - "traefik.http.routers.traefik-dashboard.rule=Host(`raspberrypi`)"
@@ -33,7 +34,7 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`raspberrypi`) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.raspberrypi`)"
       - "traefik.http.routers.whoami.entrypoints=web"
 
 
