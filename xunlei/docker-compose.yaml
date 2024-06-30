@@ -1,0 +1,20 @@
+version: "3.3"
+
+services:
+  xunlei:
+    container_name: xunlei
+    image: cnk3x/xunlei:latest
+    restart: unless-stopped
+    networks:
+      - traefik
+    volumes:
+      -  "/DATA/AppData/xunlei:/xunlei/data"
+      -  "/DATA/Downloads:/xunlei/downloads"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`raspberrypi`) && PathPrefix(`/xunlei`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+
+networks:
+  traefik:
+    external: true
