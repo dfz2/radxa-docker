@@ -5,6 +5,7 @@ services:
     container_name: xunlei
     image: cnk3x/xunlei:latest
     restart: unless-stopped
+    privileged: true
     networks:
       - traefik
     volumes:
