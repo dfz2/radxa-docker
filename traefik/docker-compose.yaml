@@ -1,0 +1,42 @@
+version: "3.3"
+
+services:
+
+  traefik:
+    image: "traefik:v3.0"
+    container_name: "traefik"
+    networks:
+      - traefik
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+    labels:
+      - "traefik.http.routers.traefik-dashboard.entrypoints=http"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`raspberrypi`)"
+      - "traefik.http.routers.traefik-dashboard.service=dashboard@internal"
+      - "traefik.http.routers.traefik-dashboard-api.entrypoints=http"
+      - "traefik.http.routers.traefik-dashboard-api.rule=Host(`raspberrypi`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.traefik-dashboard-api.service=api@internal"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: "simple-service"
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`raspberrypi`) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+
+
+networks:
+  traefik:
+    external: true
