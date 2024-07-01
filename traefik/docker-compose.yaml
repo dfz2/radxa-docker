@@ -5,6 +5,7 @@ services:
   traefik:
     image: "traefik:v3.0"
     container_name: "traefik"
+    restart: unless-stopped
     networks:
       - traefik
     command:
@@ -30,6 +31,7 @@ services:
   whoami:
     image: "traefik/whoami"
     container_name: "simple-service"
+    restart: unless-stopped
     networks:
       - traefik
     labels:
