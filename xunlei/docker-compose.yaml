@@ -4,7 +4,7 @@ services:
   xunlei:
     container_name: xunlei
     image: cnk3x/xunlei:latest
-    restart: unless-stopped
+    restart: on-failure
     privileged: true
     networks:
       - traefik
@@ -14,6 +14,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.xunlei.rule=Host(`raspberrypi`) && PathPrefix(`/webman`)"
+      - "traefik.http.routers.xunlei.rule=Host(`download.home.myhyh.com`)"
       - "traefik.http.routers.xunlei.service=xunlei"
       - "traefik.http.services.xunlei.loadbalancer.server.scheme=http"
       - "traefik.http.services.xunlei.loadbalancer.server.port=2345"
