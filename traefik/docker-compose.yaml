@@ -14,7 +14,10 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
+      - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=traefik"
+      - "--global.sendanonymoususage=false"
+      - "--global.checknewversion=false"
     labels:
       - "traefik.http.routers.traefik-dashboard.entrypoints=http"
       - "traefik.http.routers.traefik-dashboard.rule=Host(`raspberrypi`)"
@@ -27,6 +30,10 @@ services:
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
 
   whoami:
     image: "traefik/whoami"
@@ -37,6 +44,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami.rule=Host(`raspberrypi`) && PathPrefix(`/whoami`)"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.home.myhyh.com`)"
       - "traefik.http.routers.whoami.entrypoints=web"
 
 networks:

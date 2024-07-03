@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  redis:
+    hostname: "redis_server"
+    container_name: "redis_server"
+    image: redis:latest
+    restart: on-failure
+    networks:
+      - traefik
+    command: redis-server --requirepass 123456 --appendonly yes
+    ports:
+      - 6379:6379
+
+
+networks:
+  traefik:
+    external: true
+
