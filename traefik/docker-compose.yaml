@@ -20,10 +20,10 @@ services:
       - "--global.checknewversion=false"
     labels:
       - "traefik.http.routers.traefik-dashboard.entrypoints=http"
-      - "traefik.http.routers.traefik-dashboard.rule=Host(`raspberrypi`)"
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`radxa`)"
       - "traefik.http.routers.traefik-dashboard.service=dashboard@internal"
       - "traefik.http.routers.traefik-dashboard-api.entrypoints=http"
-      - "traefik.http.routers.traefik-dashboard-api.rule=Host(`raspberrypi`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.traefik-dashboard-api.rule=Host(`radxa`) && PathPrefix(`/api`)"
       - "traefik.http.routers.traefik-dashboard-api.service=api@internal"
     ports:
       - "80:80"
@@ -43,8 +43,7 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`raspberrypi`) && PathPrefix(`/whoami`)"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.home.myhyh.com`)"
+      - "traefik.http.routers.whoami.rule=Host(`radxa`) && PathPrefix(`/whoami`)"
       - "traefik.http.routers.whoami.entrypoints=web"
 
 networks:
