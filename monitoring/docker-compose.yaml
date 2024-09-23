@@ -1,0 +1,88 @@
+version: '3'
+
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    hostname: prometheus
+    restart: unless-stopped
+    command:
+      - --storage.tsdb.retention.time=7d
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - traefik
+    depends_on:
+      - cadvisor
+      - node-exporter
+
+  grafana:
+    image: grafana/grafana:latest
+    hostname: grafana
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    networks:
+      - traefik
+    volumes:
+      - ./dashboards:/etc/grafana/provisioning/dashboards
+      - ./datasources:/etc/grafana/provisioning/datasources
+    ports:
+      - 3000:3000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.xunlei.rule=Host(`monitoring.home.myhyh.com`) && PathPrefix(`/(api|public)`)"
+      - "traefik.http.routers.grafana.rule=Host(`monitoring.home.myhyh.com`)"
+      - "traefik.http.routers.grafana.service=grafana"
+      - "traefik.http.services.grafana.loadbalancer.server.scheme=http"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=grafana
+
+  cadvisor:
+    container_name: monitoring-cadvisor
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    hostname: cadvisor
+    restart: unless-stopped
+    privileged: true
+    networks:
+      - traefik
+    command:
+      - '-housekeeping_interval=15s'
+      - '-docker_only=true'
+      - '-store_container_labels=false'
+    devices:
+      - /dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /etc/machine-id:/etc/machine-id:ro
+  
+  node-exporter:
+    container_name: monitoring-node-exporter
+    image: prom/node-exporter:latest
+    hostname: node-exporter
+    restart: unless-stopped
+    networks:
+      - traefik
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --path.rootfs=/host
+      - --collector.filesystem.ignored-mount-points
+      - ^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /:/host:ro,rslave
+
+
+networks:
+  traefik:
+    external: true

@@ -1,0 +1,11 @@
+# config file for provisioning datasources
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    type: prometheus
+    url: http://prometheus:9090
+    access: proxy
+    version: 1
+    # <bool> allow users to edit datasources from the UI.
+    editable: true
+    uid: t4f0shgRk
